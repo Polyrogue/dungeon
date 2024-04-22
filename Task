@@ -1,0 +1,33 @@
+using System;
+using System.Threading.Tasks;
+
+class ConcurrentExample
+{
+    static void Main()
+    {
+        Task<int>[] tasks = new Task<int>[3];
+
+        for (int i = 0; i < 3; i++)
+        {
+            tasks[i] = Task.Run(() =>
+            {
+                int sum = 0;
+                for (int j = 0; j < 10000000; j++)
+                {
+                    sum += j;
+                }
+                return sum;
+            });
+        }
+
+        Task.WaitAll(tasks);
+
+        int totalSum = 0;
+        foreach (var task in tasks)
+        {
+            totalSum += task.Result;
+        }
+
+        Console.WriteLine("Total Sum: " + totalSum);
+    }
+}
